@@ -14,16 +14,15 @@ def load_data(path="./data/cora/", dataset="cora"):
     """Load citation network dataset (cora only for now)"""
     print('Loading {} dataset...'.format(dataset))
 
-    idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset), dtype=np.dtype(str))
-    features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
+    idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset), dtype=np.dtype(str))#Load data from a text file, with missing values handled 
+    features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)#compressed features matrix
     labels = encode_onehot(idx_features_labels[:, -1])
-
     # build graph
     idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
-    idx_map = {j: i for i, j in enumerate(idx)}
+    idx_map = {j: i for i, j in enumerate(idx)}#a kind of renaming edges
     edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset), dtype=np.int32)
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)
-    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])), shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)
+    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)#map edges list to th renamed version
+    adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])), shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)#coordinates format
 
     # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
@@ -43,8 +42,8 @@ def load_data(path="./data/cora/", dataset="cora"):
     idx_val = torch.LongTensor(idx_val)
     idx_test = torch.LongTensor(idx_test)
 
+    print("data loaded : {} nodes, {} features, {} labels".format(features.size()[0],features.size()[1],int(labels.max()) + 1))
     return adj, features, labels, idx_train, idx_val, idx_test
-
 
 def normalize_adj(mx):
     """Row-normalize sparse matrix"""
