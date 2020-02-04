@@ -1,5 +1,6 @@
 # Pytorch Graph Attention Network
 This repo was forked from : https://github.com/Diego999/pyGAT
+
 *Added `mGAT` multihead attention layer*
 
 ///////////////////////////////////////////
@@ -36,7 +37,3 @@ We develop a sparse version GAT using pytorch. There are numerically instability
 # Requirements
 
 pyGAT relies on Python 3.5 and PyTorch 0.4.1 (due to torch.sparse_coo_tensor).
-
-# Issues/Pull Requests/Feedbacks
-
-Don't hesitate to contact for any feedback or create issues/pull requests.
